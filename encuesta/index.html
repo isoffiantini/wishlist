@@ -183,6 +183,54 @@
             margin-right: 12px;
         }
 
+        /* Estilos mejorados para la sección demográfica */
+        .demographic-section {
+            margin-bottom: 30px;
+        }
+
+        .demographic-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .demographic-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .demographic-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .demographic-option {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .demographic-option:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .demographic-option.selected {
+            border-color: #000;
+            background: #f8f9fa;
+            font-weight: 500;
+        }
+
+        .demographic-option input {
+            margin-right: 8px;
+        }
+
         .survey-footer {
             padding: 30px 40px;
             background: #f8f9fa;
@@ -313,6 +361,20 @@
             .welcome-buttons {
                 flex-direction: column;
             }
+
+            .demographic-options {
+                grid-template-columns: 1fr;
+            }
+
+            .demographic-option {
+                padding: 12px 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .demographic-options {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -442,25 +504,55 @@
                     <div class="error-message" id="error4">Por favor selecciona una opción</div>
                 </div>
 
-                <!-- Pregunta 5 - Perfil -->
+                <!-- Pregunta 5 - Perfil DEMOGRÁFICO MEJORADO -->
                 <div class="question" id="question5">
                     <h2>Para ayudarnos a entender mejor tus necesidades</h2>
-                    <div class="options-group">
-                        <div>
-                            <label style="display: block; margin-bottom: 15px; font-weight: bold;">Género:</label>
-                            <label class="option"><input type="radio" name="q5_genero" value="mujer"> Mujer</label>
-                            <label class="option"><input type="radio" name="q5_genero" value="hombre"> Hombre</label>
-                            <label class="option"><input type="radio" name="q5_genero" value="nodecir"> Prefiero no decirlo</label>
+                    
+                    <div class="demographic-section">
+                        <div class="demographic-title">Género</div>
+                        <div class="demographic-options">
+                            <label class="demographic-option">
+                                <input type="radio" name="q5_genero" value="mujer">
+                                Mujer
+                            </label>
+                            <label class="demographic-option">
+                                <input type="radio" name="q5_genero" value="hombre">
+                                Hombre
+                            </label>
+                            <label class="demographic-option">
+                                <input type="radio" name="q5_genero" value="nodecir">
+                                Prefiero no decirlo
+                            </label>
                         </div>
-                        
-                        <div style="margin-top: 25px;">
-                            <label style="display: block; margin-bottom: 15px; font-weight: bold;">Grupo de edad:</label>
-                            <label class="option"><input type="radio" name="q5_edad" value="menos18"> Menos de 18 años</label>
-                            <label class="option"><input type="radio" name="q5_edad" value="18-24"> 18-24 años</label>
-                            <label class="option"><input type="radio" name="q5_edad" value="25-34"> 25-34 años</label>
-                            <label class="option"><input type="radio" name="q5_edad" value="35-44"> 35-44 años</label>
-                            <label class="option"><input type="radio" name="q5_edad" value="45-54"> 45-54 años</label>
-                            <label class="option"><input type="radio" name="q5_edad" value="55mas"> 55 años o más</label>
+                    </div>
+                    
+                    <div class="demographic-section">
+                        <div class="demographic-title">Grupo de edad</div>
+                        <div class="demographic-options">
+                            <label class="demographic-option">
+                                <input type="radio" name="q5_edad" value="menos18">
+                                Menos de 18 años
+                            </label>
+                            <label class="demographic-option">
+                                <input type="radio" name="q5_edad" value="18-24">
+                                18-24 años
+                            </label>
+                            <label class="demographic-option">
+                                <input type="radio" name="q5_edad" value="25-34">
+                                25-34 años
+                            </label>
+                            <label class="demographic-option">
+                                <input type="radio" name="q5_edad" value="35-44">
+                                35-44 años
+                            </label>
+                            <label class="demographic-option">
+                                <input type="radio" name="q5_edad" value="45-54">
+                                45-54 años
+                            </label>
+                            <label class="demographic-option">
+                                <input type="radio" name="q5_edad" value="55mas">
+                                55 años o más
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -618,18 +710,24 @@
             });
         });
 
-        // Manejar selección de opciones
-        document.querySelectorAll('.option, .checkbox-option').forEach(option => {
+        // Manejar selección de opciones (para todas las preguntas)
+        document.querySelectorAll('.option, .checkbox-option, .demographic-option').forEach(option => {
             option.addEventListener('click', function(e) {
                 if (e.target.type !== 'radio' && e.target.type !== 'checkbox' && e.target.type !== 'text') {
                     const input = this.querySelector('input[type="radio"], input[type="checkbox"]');
                     if (input) {
                         if (input.type === 'checkbox') {
                             input.checked = !input.checked;
+                            this.classList.toggle('selected', input.checked);
                         } else {
+                            // Para radios, deseleccionar otros en el mismo grupo
+                            const groupName = input.name;
+                            document.querySelectorAll(`input[name="${groupName}"]`).forEach(radio => {
+                                radio.closest('.option, .checkbox-option, .demographic-option')?.classList.remove('selected');
+                            });
                             input.checked = true;
+                            this.classList.add('selected');
                         }
-                        this.classList.toggle('selected', input.checked);
                     }
                 }
             });

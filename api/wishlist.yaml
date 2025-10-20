@@ -1,0 +1,122 @@
+// src/controllers/wishlistController.js
+const wishlistService = require('../services/wishlistService');
+
+class WishlistController {
+  async getWishlist(req, res) {
+    try {
+      const userId = req.user.id;
+      const wishlist = await wishlistService.getUserWishlist(userId);
+      
+      res.json(wishlist);
+    } catch (error) {
+      res.status(500).json({
+        code: 'INTERNAL_ERROR',
+        message: 'Error al obtener la wishlist'
+      });
+    }
+  }
+
+  async addToWishlist(req, res) {
+    try {
+      const userId = req.user.id;
+      const { product_id, size, color } = req.body;
+      
+      const result = await wishlistService.addItemToWishlist(
+        userId, 
+        product_id, 
+        { size, color }
+      );
+      
+      res.status(201).json({
+        success: true,
+        message: 'Producto añadido a tu wishlist',
+        data: {
+          wishlist_item_id: result.itemId
+        }
+      });
+    } catch (error) {
+      if (error.message === 'PRODUCT_ALREADY_IN_WISHLIST') {
+        return res.status(409).json({
+          code: 'DUPLICATE_ITEM',
+          message: 'El producto ya está en tu wishlist'
+        });
+      }
+      
+      if (error.message === 'PRODUCT_NOT_FOUND') {
+        return res.status(404).json({
+          code: 'PRODUCT_NOT_FOUND',
+          message: 'Producto no encontrado'
+        });
+      }
+      
+      res.status(500).json({
+        code: 'INTERNAL_ERROR',
+        message: 'Error al añadir producto a la wishlist'
+      });
+    }
+  }
+
+  async removeFromWishlist(req, res) {
+    try {
+      const userId = req.user.id;
+      const { item_id } = req.params;
+      
+      await wishlistService.removeItemFromWishlist(userId, item_id);
+      
+      res.json({
+        success: true,
+        message: 'Producto eliminado de tu wishlist'
+      });
+    } catch (error) {
+      if (error.message === 'ITEM_NOT_FOUND') {
+        return res.status(404).json({
+          code: 'ITEM_NOT_FOUND',
+          message: 'Producto no encontrado en tu wishlist'
+        });
+      }
+      
+      res.status(500).json({
+        code: 'INTERNAL_ERROR',
+        message: 'Error al eliminar producto de la wishlist'
+      });
+    }
+  }
+
+  async moveToCart(req, res) {
+    try {
+      const userId = req.user.id;
+      const { item_id } = req.params;
+      
+      const result = await wishlistService.moveItemToCart(userId, item_id);
+      
+      res.json({
+        success: true,
+        message: 'Producto añadido al carrito',
+        data: {
+          cart_item_id: result.cartItemId
+        }
+      });
+    } catch (error) {
+      if (error.message === 'ITEM_NOT_FOUND') {
+        return res.status(404).json({
+          code: 'ITEM_NOT_FOUND',
+          message: 'Producto no encontrado en tu wishlist'
+        });
+      }
+      
+      if (error.message === 'PRODUCT_UNAVAILABLE') {
+        return res.status(400).json({
+          code: 'PRODUCT_UNAVAILABLE',
+          message: 'El producto no está disponible'
+        });
+      }
+      
+      res.status(500).json({
+        code: 'INTERNAL_ERROR',
+        message: 'Error al mover producto al carrito'
+      });
+    }
+  }
+}
+
+module.exports = new WishlistController();
