@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zara Wishlist - Compartir</title>
+    <title>Zara Wishlist - Mockups MVP</title>
     <style>
         * {
             margin: 0;
@@ -43,8 +43,12 @@
         }
 
         .section-title::before {
-            content: "🔗";
+            content: "📋";
             font-size: 28px;
+        }
+
+        .section-title.sharing::before {
+            content: "🔗";
         }
 
         .mockup-grid {
@@ -59,6 +63,13 @@
             border-radius: 15px;
             padding: 25px;
             background: #fafafa;
+            transition: all 0.3s ease;
+        }
+
+        .mockup-card:hover {
+            border-color: #000;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
         .mockup-header {
@@ -77,12 +88,359 @@
         }
 
         .badge {
-            background: #28a745;
+            background: #000;
             color: white;
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 500;
+        }
+
+        .badge-new {
+            background: #007bff;
+        }
+
+        .badge-success {
+            background: #28a745;
+        }
+
+        .badge-warning {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .product-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .product-header {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .product-image {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 12px;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .product-price {
+            font-size: 16px;
+            font-weight: 600;
+            color: #000;
+        }
+
+        .product-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .quantity-input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 5px;
+        }
+
+        .notes-input {
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: 2px solid #000;
+            border-radius: 8px;
+            background: #000;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn:hover {
+            background: #333;
+            border-color: #333;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #000;
+        }
+
+        .btn-outline:hover {
+            background: #000;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            border-color: #c82333;
+        }
+
+        .btn-success {
+            background: #28a745;
+            border-color: #28a745;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            border-color: #218838;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            border-color: #17a2b8;
+        }
+
+        .btn-info:hover {
+            background: #138496;
+            border-color: #138496;
+        }
+
+        .wishlist-header {
+            background: #000;
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        .wishlist-name {
+            font-size: 28px;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+
+        .wishlist-description {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-text {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #000;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .wishlist-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 15px;
+        }
+
+        .wishlist-tab {
+            padding: 10px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .wishlist-tab.active {
+            border-color: #000;
+            background: #000;
+            color: white;
+        }
+
+        .wishlist-tab:hover:not(.active) {
+            border-color: #666;
+        }
+
+        .share-link-container {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .share-link {
+            font-family: monospace;
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            word-break: break-all;
+            margin-bottom: 10px;
+        }
+
+        .collaboration-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .collab-stat {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .collab-stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 5px;
+        }
+
+        .collab-stat-label {
+            font-size: 12px;
+            color: #666;
         }
 
         .sharing-options {
@@ -124,143 +482,6 @@
             font-size: 12px;
             color: #666;
             line-height: 1.4;
-        }
-
-        .share-link-container {
-            background: #f8f9fa;
-            border: 2px dashed #dee2e6;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 20px 0;
-        }
-
-        .share-link {
-            font-family: monospace;
-            background: white;
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-            word-break: break-all;
-            margin-bottom: 10px;
-        }
-
-        .btn {
-            padding: 8px 16px;
-            border: 2px solid #000;
-            border-radius: 8px;
-            background: #000;
-            color: white;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .btn:hover {
-            background: #333;
-            border-color: #333;
-        }
-
-        .btn-success {
-            background: #28a745;
-            border-color: #28a745;
-        }
-
-        .btn-success:hover {
-            background: #218838;
-            border-color: #218838;
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: #000;
-        }
-
-        .btn-outline:hover {
-            background: #000;
-            color: white;
-        }
-
-        .btn-danger {
-            background: #dc3545;
-            border-color: #dc3545;
-        }
-
-        .btn-danger:hover {
-            background: #c82333;
-            border-color: #c82333;
-        }
-
-        .btn-info {
-            background: #17a2b8;
-            border-color: #17a2b8;
-        }
-
-        .btn-info:hover {
-            background: #138496;
-            border-color: #138496;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .collaboration-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 10px;
-            margin: 20px 0;
-        }
-
-        .collab-stat {
-            text-align: center;
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-        }
-
-        .collab-stat-value {
-            font-size: 24px;
-            font-weight: 600;
-            color: #000;
-            margin-bottom: 5px;
-        }
-
-        .collab-stat-label {
-            font-size: 12px;
-            color: #666;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #333;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: #000;
         }
 
         .collab-settings {
@@ -331,12 +552,20 @@
                 grid-template-columns: 1fr;
             }
             
-            .sharing-options {
+            .product-details {
                 grid-template-columns: 1fr;
             }
             
             .action-buttons {
                 flex-direction: column;
+            }
+
+            .wishlist-tabs {
+                flex-wrap: wrap;
+            }
+
+            .sharing-options {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -344,16 +573,128 @@
 <body>
     <div class="container">
         
-        <!-- COMPARTIR WISHLIST UNIFICADO -->
+        <!-- 1. GESTIÓN DE MÚLTIPLES WISHLISTS -->
         <div class="mockup-section">
-            <div class="section-title">Compartir Wishlist</div>
+            <div class="section-title">1. Gestión de Múltiples Wishlists</div>
+            
+            <div class="wishlist-tabs">
+                <div class="wishlist-tab active">Lista de Boda 👰</div>
+                <div class="wishlist-tab">Cumpleaños 30 🎂</div>
+                <div class="wishlist-tab">Navidad 2024 🎄</div>
+                <div class="wishlist-tab">Verano 🌴</div>
+                <button class="btn btn-outline" style="margin-left: auto;">+ Nueva Lista</button>
+            </div>
+            
+            <div class="mockup-grid">
+                <!-- Lista de Wishlists -->
+                <div class="mockup-card">
+                    <div class="mockup-header">
+                        <div class="mockup-title">Mis Wishlists</div>
+                        <div class="badge badge-new">4 listas</div>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: white; border-radius: 8px; margin-bottom: 8px; border: 2px solid #000;">
+                            <div>
+                                <div style="font-weight: 600;">Lista de Boda</div>
+                                <div style="font-size: 12px; color: #666;">12 productos · Compartida</div>
+                            </div>
+                            <div style="color: #28a745;">★</div>
+                        </div>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: white; border-radius: 8px; margin-bottom: 8px; border: 1px solid #e0e0e0;">
+                            <div>
+                                <div style="font-weight: 600;">Cumpleaños 30</div>
+                                <div style="font-size: 12px; color: #666;">8 productos · Privada</div>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: white; border-radius: 8px; margin-bottom: 8px; border: 1px solid #e0e0e0;">
+                            <div>
+                                <div style="font-weight: 600;">Navidad 2024</div>
+                                <div style="font-size: 12px; color: #666;">5 productos · Compartida</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn">Gestionar Listas</button>
+                    </div>
+                </div>
+
+                <!-- Crear Nueva Wishlist -->
+                <div class="mockup-card">
+                    <div class="mockup-header">
+                        <div class="mockup-title">Crear Nueva Wishlist</div>
+                        <div class="badge badge-success">NUEVO</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Nombre de la Wishlist</label>
+                        <input type="text" class="form-input" placeholder="Ej: Regalos de Baby Shower...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Descripción</label>
+                        <textarea class="form-input form-textarea" placeholder="Describe el propósito de tu lista..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox">
+                            <span>Hacer lista principal</span>
+                        </label>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn">Crear Wishlist</button>
+                        <button class="btn btn-outline">Cancelar</button>
+                    </div>
+                </div>
+
+                <!-- Estadísticas de Listas -->
+                <div class="mockup-card">
+                    <div class="mockup-header">
+                        <div class="mockup-title">Resumen de Wishlists</div>
+                        <div class="badge">ESTADÍSTICAS</div>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">4</div>
+                            <div class="stat-label">Listas activas</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">25</div>
+                            <div class="stat-label">Productos totales</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">3/4</div>
+                            <div class="stat-label">Listas compartidas</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <div style="font-weight: 500; margin-bottom: 10px;">Espacio utilizado:</div>
+                        <div style="background: #e9ecef; border-radius: 10px; height: 10px; overflow: hidden;">
+                            <div style="background: #28a745; height: 100%; width: 65%;"></div>
+                        </div>
+                        <div style="text-align: center; font-size: 12px; color: #666; margin-top: 5px;">65% del límite (50 productos máx.)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. COMPARTIR WISHLIST MEJORADO -->
+        <div class="mockup-section">
+            <div class="section-title sharing">2. Compartir Wishlist</div>
             
             <div class="mockup-grid">
                 <!-- Panel de Control Principal -->
                 <div class="mockup-card">
                     <div class="mockup-header">
                         <div class="mockup-title">Compartir Wishlist</div>
-                        <div class="badge">ACTIVO</div>
+                        <div class="badge badge-success">ACTIVO</div>
                     </div>
                     
                     <div class="sharing-options">
@@ -398,7 +739,7 @@
                     </div>
                     
                     <div class="action-buttons">
-                        <button class="btn btn-info" onclick="showSettings()">⚙️ Configurar</button>
+                        <button class="btn btn-info" id="config-btn" onclick="showSettings()">⚙️ Configurar</button>
                         <button class="btn btn-danger">🚫 Desactivar</button>
                     </div>
                 </div>
@@ -459,7 +800,7 @@
                 <div class="mockup-card">
                     <div class="mockup-header">
                         <div class="mockup-title">Vista de Lista Compartida</div>
-                        <div class="badge">MODO PÚBLICO</div>
+                        <div class="badge badge-warning">MODO COLABORATIVO</div>
                     </div>
                     
                     <div style="background: #000; color: white; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
@@ -501,6 +842,136 @@
             </div>
         </div>
 
+        <!-- 3. AÑADIR, ACTUALIZAR Y ELIMINAR PRODUCTOS -->
+        <div class="mockup-section">
+            <div class="section-title">3. Añadir, Actualizar y Eliminar Productos</div>
+            
+            <div class="mockup-grid">
+                <!-- Añadir Producto -->
+                <div class="mockup-card">
+                    <div class="mockup-header">
+                        <div class="mockup-title">Añadir Producto a Wishlist</div>
+                        <div class="badge">POST /wishlists/{id}/items</div>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-header">
+                            <div class="product-image">🛍️</div>
+                            <div class="product-info">
+                                <div class="product-name">VESTIDO MIDI SATINADO</div>
+                                <div class="product-price">29,95 €</div>
+                            </div>
+                        </div>
+                        
+                        <div class="product-details">
+                            <div class="detail-item">
+                                <div class="detail-label">Cantidad</div>
+                                <div class="quantity-selector">
+                                    <button class="quantity-btn">-</button>
+                                    <input type="text" class="quantity-input" value="1">
+                                    <button class="quantity-btn">+</button>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <div class="detail-label">Talla</div>
+                                <select class="form-input">
+                                    <option>XS</option>
+                                    <option selected>S</option>
+                                    <option>M</option>
+                                    <option>L</option>
+                                    <option>XL</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Notas (opcional)</label>
+                            <textarea class="notes-input" placeholder="Ej: Para evento de gala, color negro preferido..."></textarea>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="btn">Añadir a Wishlist</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Editar Producto -->
+                <div class="mockup-card">
+                    <div class="mockup-header">
+                        <div class="mockup-title">Editar Producto en Wishlist</div>
+                        <div class="badge">PUT /wishlists/{id}/items/{item_id}</div>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-header">
+                            <div class="product-image">👗</div>
+                            <div class="product-info">
+                                <div class="product-name">VESTIDO MIDI SATINADO</div>
+                                <div class="product-price">59,90 € (2 x 29,95 €)</div>
+                            </div>
+                        </div>
+                        
+                        <div class="product-details">
+                            <div class="detail-item">
+                                <div class="detail-label">Cantidad</div>
+                                <div class="quantity-selector">
+                                    <button class="quantity-btn">-</button>
+                                    <input type="text" class="quantity-input" value="2">
+                                    <button class="quantity-btn">+</button>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <div class="detail-label">Talla</div>
+                                <select class="form-input">
+                                    <option>XS</option>
+                                    <option>S</option>
+                                    <option selected>M</option>
+                                    <option>L</option>
+                                    <option>XL</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Notas</label>
+                            <textarea class="notes-input">Una talla M y una S para probar</textarea>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="btn">Guardar Cambios</button>
+                            <button class="btn btn-danger">Eliminar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Límite de Productos -->
+                <div class="mockup-card">
+                    <div class="mockup-header">
+                        <div class="mockup-title">Límite de Productos</div>
+                        <div class="badge">Máximo 50 items</div>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">42/50</div>
+                            <div class="stat-label">Productos en lista</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">8</div>
+                            <div class="stat-label">Espacios libres</div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 15px; margin-top: 20px;">
+                        <div style="font-weight: 500; color: #856404; margin-bottom: 5px;">⚠️ Límite cercano</div>
+                        <div style="font-size: 14px; color: #856404;">Te quedan 8 espacios en tu wishlist</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -522,16 +993,22 @@
                 opt.classList.remove('selected');
             });
             
+            const configBtn = document.getElementById('config-btn');
+            const statusMessage = document.querySelector('.status-message');
+            
             if (mode === 'simple') {
                 document.getElementById('simple-mode').classList.add('selected');
-                document.querySelector('.status-message div:first-child').textContent = '🌐 Enlace activo - Enlace Simple';
-                document.querySelector('.status-message div:last-child').textContent = 'Los usuarios solo pueden ver tu lista (solo lectura)';
-                // Ocultar configuración avanzada
+                statusMessage.querySelector('div:first-child').textContent = '🌐 Enlace activo - Enlace Simple';
+                statusMessage.querySelector('div:last-child').textContent = 'Los usuarios solo pueden ver tu lista (solo lectura)';
+                // Ocultar configuración avanzada y botón de configurar
                 document.getElementById('settings-panel').style.display = 'none';
+                configBtn.style.display = 'none';
             } else {
                 document.getElementById('collab-mode').classList.add('selected');
-                document.querySelector('.status-message div:first-child').textContent = '🌐 Enlace activo - Modo Colaborativo';
-                document.querySelector('.status-message div:last-child').textContent = 'Los usuarios pueden ver tu lista y dejar comentarios';
+                statusMessage.querySelector('div:first-child').textContent = '🌐 Enlace activo - Modo Colaborativo';
+                statusMessage.querySelector('div:last-child').textContent = 'Los usuarios pueden ver tu lista y dejar comentarios';
+                // Mostrar botón de configurar
+                configBtn.style.display = 'inline-flex';
             }
         }
 
@@ -548,13 +1025,41 @@
             hideSettings();
         }
 
+        // Simulación de interacciones básicas
+        document.querySelectorAll('.quantity-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const input = this.parentElement.querySelector('.quantity-input');
+                let value = parseInt(input.value) || 1;
+                
+                if (this.textContent === '+') {
+                    value = Math.min(value + 1, 10);
+                } else {
+                    value = Math.max(value - 1, 1);
+                }
+                
+                input.value = value;
+            });
+        });
+
+        // Simulación de tabs de wishlists
+        document.querySelectorAll('.wishlist-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.wishlist-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
         // Simulación de copiar enlace
-        document.querySelector('.btn-success').addEventListener('click', function() {
-            const originalText = this.textContent;
-            this.textContent = '✅ Copiado!';
-            setTimeout(() => {
-                this.textContent = originalText;
-            }, 2000);
+        document.querySelectorAll('.btn-success').forEach(btn => {
+            if (btn.textContent.includes('Copiar')) {
+                btn.addEventListener('click', function() {
+                    const originalText = this.textContent;
+                    this.textContent = '✅ Copiado!';
+                    setTimeout(() => {
+                        this.textContent = originalText;
+                    }, 2000);
+                });
+            }
         });
     </script>
 </body>
