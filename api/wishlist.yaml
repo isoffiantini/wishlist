@@ -16,7 +16,7 @@ class WishlistController {
     }
   }
 
-  async addToWishlist(req, res) {
+  async addToWishlist(req,res) {
     try {
       const userId = req.user.id;
       const { product_id, size, color } = req.body;
