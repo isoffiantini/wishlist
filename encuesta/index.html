@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuesta Wishlist - Zara</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .survey-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .survey-header {
+            background: #000;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .survey-header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .survey-header p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .survey-progress {
+            height: 4px;
+            background: #f0f0f0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #000;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .survey-content {
+            padding: 40px;
+        }
+
+        .question {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .question.active {
+            display: block;
+        }
+
+        .question h2 {
+            font-size: 20px;
+            margin-bottom: 25px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .options-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .option.selected {
+            border-color: #000;
+            background: #f8f9fa;
+        }
+
+        .option input[type="radio"],
+        .option input[type="checkbox"] {
+            margin-right: 12px;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #000;
+        }
+
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .checkbox-option {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-option:hover {
+            border-color: #667eea;
+        }
+
+        .checkbox-option.selected {
+            border-color: #000;
+            background: #f8f9fa;
+        }
+
+        .checkbox-option input {
+            margin-top: 2px;
+            margin-right: 12px;
+        }
+
+        .survey-footer {
+            padding: 30px 40px;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: 2px solid #000;
+            border-radius: 25px;
+            background: #000;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #333;
+            border-color: #333;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #000;
+        }
+
+        .btn-secondary:hover {
+            background: #000;
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .step-indicator {
+            font-size: 14px;
+            color: #666;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .required {
+            color: #e74c3c;
+            margin-left: 4px;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .survey-content {
+                padding: 30px 20px;
+            }
+            
+            .survey-footer {
+                padding: 20px;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="survey-container">
+        <div class="survey-header">
+            <h1>¡Tu opinión nos ayuda a mejorar! 🔮</h1>
+            <p>En Zara estamos trabajando en una nueva funcionalidad de LISTA DE DESEOS</p>
+        </div>
+        
+        <div class="survey-progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        
+        <form id="wishlistSurvey">
+            <div class="survey-content">
+                <!-- Pregunta 1 -->
+                <div class="question active" id="question1">
+                    <h2>¿Cómo sueles guardar productos que te interesan pero no compras inmediatamente?<span class="required">*</span></h2>
+                    <div class="options-group">
+                        <label class="option">
+                            <input type="radio" name="q1" value="carrito" required>
+                            Los añado al carrito y los dejo ahí
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q1" value="capturas">
+                            Tomo capturas de pantalla
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q1" value="favoritos">
+                            Los guardo en favoritos del navegador
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q1" value="mensajes">
+                            Envío los enlaces por mensaje a mí mismo/a
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q1" value="buscar">
+                            No guardo productos, los busco de nuevo después
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q1" value="otro">
+                            Otro: 
+                            <input type="text" class="text-input" placeholder="Especifica..." style="margin-top: 10px; display: none;" id="q1-otro">
+                        </label>
+                    </div>
+                    <div class="error-message" id="error1">Por favor selecciona una opción</div>
+                </div>
+
+                <!-- Pregunta 2 -->
+                <div class="question" id="question2">
+                    <h2>Si existiera una wishlist en Zara, ¿con qué frecuencia crees que la usarías?<span class="required">*</span></h2>
+                    <div class="options-group">
+                        <label class="option"><input type="radio" name="q2" value="diariamente" required> Diariamente</label>
+                        <label class="option"><input type="radio" name="q2" value="2-3semana"> 2-3 veces por semana</label>
+                        <label class="option"><input type="radio" name="q2" value="semanal"> Una vez por semana</label>
+                        <label class="option"><input type="radio" name="q2" value="mensual"> 1-2 veces al mes</label>
+                        <label class="option"><input type="radio" name="q2" value="temporadas"> Solo en temporadas específicas</label>
+                        <label class="option"><input type="radio" name="q2" value="nunca"> Casi nunca</label>
+                    </div>
+                    <div class="error-message" id="error2">Por favor selecciona una opción</div>
+                </div>
+
+                <!-- Pregunta 3 -->
+                <div class="question" id="question3">
+                    <h2>¿Cuáles de estas funciones serían MÁS importantes para ti? (Marca hasta 3)<span class="required">*</span></h2>
+                    <div class="checkbox-grid">
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="q3" value="lista-unica">
+                            Ver todos mis productos guardados en una lista
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="q3" value="notificaciones-precio">
+                            Notificaciones cuando un producto baja de precio
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="q3" value="alertas-stock">
+                            Avisos cuando un producto se queda con poco stock
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="q3" value="compartir">
+                            Compartir mi lista con amigos/familia
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="q3" value="multiples-listas">
+                            Crear múltiples listas (Navidad, Verano, etc.)
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="q3" value="carrito-masivo">
+                            Añadir toda la lista al carrito de una vez
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="q3" value="recomendaciones">
+                            Recomendaciones basadas en lo que guardo
+                        </label>
+                    </div>
+                    <div class="error-message" id="error3">Por favor selecciona hasta 3 opciones</div>
+                </div>
+
+                <!-- Pregunta 4 -->
+                <div class="question" id="question4">
+                    <h2>¿Cómo te gustaría organizar tus productos guardados?<span class="required">*</span></h2>
+                    <div class="options-group">
+                        <label class="option"><input type="radio" name="q4" value="lista-unica" required> Una sola lista grande</label>
+                        <label class="option"><input type="radio" name="q4" value="categorias"> Múltiples listas por categorías</label>
+                        <label class="option"><input type="radio" name="q4" value="eventos"> Listas por ocasiones/eventos</label>
+                        <label class="option"><input type="radio" name="q4" value="temporales"> Listas temporales</label>
+                        <label class="option"><input type="radio" name="q4" value="simple"> No me importa organizarlos</label>
+                    </div>
+                    <div class="error-message" id="error4">Por favor selecciona una opción</div>
+                </div>
+
+                <!-- Pregunta 5 - Perfil -->
+                <div class="question" id="question5">
+                    <h2>Para ayudarnos a entender mejor tus necesidades</h2>
+                    <div class="options-group">
+                        <div>
+                            <label style="display: block; margin-bottom: 15px; font-weight: bold;">Género:</label>
+                            <label class="option"><input type="radio" name="q5_genero" value="mujer"> Mujer</label>
+                            <label class="option"><input type="radio" name="q5_genero" value="hombre"> Hombre</label>
+                            <label class="option"><input type="radio" name="q5_genero" value="nodecir"> Prefiero no decirlo</label>
+                        </div>
+                        
+                        <div style="margin-top: 25px;">
+                            <label style="display: block; margin-bottom: 15px; font-weight: bold;">Grupo de edad:</label>
+                            <label class="option"><input type="radio" name="q5_edad" value="menos18"> Menos de 18 años</label>
+                            <label class="option"><input type="radio" name="q5_edad" value="18-24"> 18-24 años</label>
+                            <label class="option"><input type="radio" name="q5_edad" value="25-34"> 25-34 años</label>
+                            <label class="option"><input type="radio" name="q5_edad" value="35-44"> 35-44 años</label>
+                            <label class="option"><input type="radio" name="q5_edad" value="45-54"> 45-54 años</label>
+                            <label class="option"><input type="radio" name="q5_edad" value="55mas"> 55 años o más</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="survey-footer">
+                <button type="button" class="btn btn-secondary" id="prevBtn" disabled>Anterior</button>
+                <span class="step-indicator">Paso <span id="currentStep">1</span> de 5</span>
+                <button type="button" class="btn" id="nextBtn">Siguiente</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let currentQuestion = 1;
+        const totalQuestions = 5;
+
+        // Elementos DOM
+        const progressBar = document.getElementById('progressBar');
+        const currentStep = document.getElementById('currentStep');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        // Actualizar progreso
+        function updateProgress() {
+            const progress = ((currentQuestion - 1) / (totalQuestions - 1)) * 100;
+            progressBar.style.width = `${progress}%`;
+            currentStep.textContent = currentQuestion;
+        }
+
+        // Mostrar/ocultar preguntas
+        function showQuestion(questionNumber) {
+            document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
+            document.getElementById(`question${questionNumber}`).classList.add('active');
+            
+            // Actualizar botones
+            prevBtn.disabled = questionNumber === 1;
+            nextBtn.textContent = questionNumber === totalQuestions ? 'Enviar' : 'Siguiente';
+            
+            updateProgress();
+        }
+
+        // Validar pregunta actual
+        function validateCurrentQuestion() {
+            const currentQ = document.getElementById(`question${currentQuestion}`);
+            const errorElement = document.getElementById(`error${currentQuestion}`);
+            
+            switch(currentQuestion) {
+                case 1:
+                    const q1Selected = document.querySelector('input[name="q1"]:checked');
+                    if (!q1Selected) {
+                        errorElement.style.display = 'block';
+                        return false;
+                    }
+                    errorElement.style.display = 'none';
+                    return true;
+                    
+                case 2:
+                    const q2Selected = document.querySelector('input[name="q2"]:checked');
+                    if (!q2Selected) {
+                        errorElement.style.display = 'block';
+                        return false;
+                    }
+                    errorElement.style.display = 'none';
+                    return true;
+                    
+                case 3:
+                    const q3Selected = document.querySelectorAll('input[name="q3"]:checked');
+                    if (q3Selected.length === 0 || q3Selected.length > 3) {
+                        errorElement.style.display = 'block';
+                        return false;
+                    }
+                    errorElement.style.display = 'none';
+                    return true;
+                    
+                case 4:
+                    const q4Selected = document.querySelector('input[name="q4"]:checked');
+                    if (!q4Selected) {
+                        errorElement.style.display = 'block';
+                        return false;
+                    }
+                    errorElement.style.display = 'none';
+                    return true;
+                    
+                default:
+                    return true;
+            }
+        }
+
+        // Manejar opción "Otro" en pregunta 1
+        document.querySelectorAll('input[name="q1"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const otroInput = document.getElementById('q1-otro');
+                otroInput.style.display = this.value === 'otro' ? 'block' : 'none';
+                if (this.value !== 'otro') {
+                    otroInput.value = '';
+                }
+            });
+        });
+
+        // Manejar selección de opciones
+        document.querySelectorAll('.option, .checkbox-option').forEach(option => {
+            option.addEventListener('click', function(e) {
+                if (e.target.type !== 'radio' && e.target.type !== 'checkbox' && e.target.type !== 'text') {
+                    const input = this.querySelector('input[type="radio"], input[type="checkbox"]');
+                    if (input) {
+                        if (input.type === 'checkbox') {
+                            input.checked = !input.checked;
+                        } else {
+                            input.checked = true;
+                        }
+                        this.classList.toggle('selected', input.checked);
+                    }
+                }
+            });
+        });
+
+        // Botones de navegación
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestion > 1) {
+                currentQuestion--;
+                showQuestion(currentQuestion);
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (!validateCurrentQuestion()) {
+                return;
+            }
+
+            if (currentQuestion < totalQuestions) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+            } else {
+                // Enviar encuesta
+                alert('¡Gracias por completar la encuesta! Tu feedback es muy valioso para nosotros.');
+                // Aquí iría la lógica para enviar los datos al servidor
+                console.log('Encuesta completada');
+            }
+        });
+
+        // Inicializar
+        updateProgress();
+
+        // Simular que el usuario ya está autenticado en la app
+        console.log('Usuario autenticado - mostrando encuesta wishlist');
+    </script>
+</body>
+</html>
