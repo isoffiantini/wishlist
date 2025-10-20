@@ -481,6 +481,47 @@
             color: #856404;
         }
 
+        .sharing-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .sharing-option {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sharing-option.selected {
+            border-color: #007bff;
+            background: #f8f9ff;
+        }
+
+        .sharing-option:hover {
+            border-color: #007bff;
+        }
+
+        .sharing-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .sharing-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .sharing-desc {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+        }
+
         @media (max-width: 768px) {
             .mockup-grid {
                 grid-template-columns: 1fr;
@@ -496,6 +537,10 @@
 
             .wishlist-tabs {
                 flex-wrap: wrap;
+            }
+
+            .sharing-options {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -615,28 +660,41 @@
             </div>
         </div>
 
-        <!-- 2. COMPARTIR WISHLIST VÍA ENLACE -->
+        <!-- 2. COMPARTIR WISHLIST UNIFICADO -->
         <div class="mockup-section">
-            <div class="section-title">2. Compartir Wishlist vía Enlace</div>
+            <div class="section-title">2. Compartir Wishlist</div>
             
             <div class="mockup-grid">
-                <!-- Enlace Público Simple -->
+                <!-- Compartir Principal -->
                 <div class="mockup-card">
                     <div class="mockup-header">
-                        <div class="mockup-title">Compartir Público</div>
+                        <div class="mockup-title">Compartir Wishlist</div>
                         <div class="badge badge-success">ACTIVO</div>
+                    </div>
+                    
+                    <div class="sharing-options">
+                        <div class="sharing-option selected">
+                            <div class="sharing-icon">🔗</div>
+                            <div class="sharing-title">Enlace Simple</div>
+                            <div class="sharing-desc">Solo lectura, sin expiración</div>
+                        </div>
+                        <div class="sharing-option">
+                            <div class="sharing-icon">👥</div>
+                            <div class="sharing-title">Modo Colaborativo</div>
+                            <div class="sharing-desc">Con comentarios y expiración</div>
+                        </div>
                     </div>
                     
                     <div class="share-link-container">
                         <div class="share-link">https://zara.com/wishlist/share/abc123xyz</div>
                         <div style="display: flex; gap: 10px;">
                             <button class="btn btn-success" style="flex: 1;">📋 Copiar Enlace</button>
-                            <button class="btn btn-outline">↗️</button>
+                            <button class="btn btn-outline">↗️ Compartir</button>
                         </div>
                     </div>
                     
                     <div style="background: #d1ecf1; border: 1px solid #bee5eb; border-radius: 6px; padding: 12px; margin: 15px 0;">
-                        <div style="font-weight: 500; color: #0c5460; margin-bottom: 5px;">🌐 Enlace público activo</div>
+                        <div style="font-weight: 500; color: #0c5460; margin-bottom: 5px;">🌐 Enlace activo</div>
                         <div style="font-size: 14px; color: #0c5460;">Cualquiera con el enlace puede ver tu lista</div>
                     </div>
                     
@@ -649,34 +707,52 @@
                             <div class="collab-stat-value">8</div>
                             <div class="collab-stat-label">Compartidos</div>
                         </div>
+                        <div class="collab-stat">
+                            <div class="collab-stat-value">5</div>
+                            <div class="collab-stat-label">Comentarios</div>
+                        </div>
                     </div>
                     
                     <div class="action-buttons">
-                        <button class="btn btn-danger">Desactivar Enlace</button>
-                        <button class="btn btn-outline">Renovar</button>
+                        <button class="btn btn-info">Configurar</button>
+                        <button class="btn btn-danger">Desactivar</button>
                     </div>
                 </div>
 
-                <!-- Configuración de Compartición -->
+                <!-- Configuración Unificada -->
                 <div class="mockup-card">
                     <div class="mockup-header">
-                        <div class="mockup-title">Configurar Compartición</div>
-                        <div class="badge">OPCIONES</div>
+                        <div class="mockup-title">Configuración de Compartición</div>
+                        <div class="badge">AJUSTES</div>
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Tipo de Acceso</label>
+                        <label class="form-label">Modo de Compartición</label>
                         <select class="form-input">
-                            <option selected>Público (cualquiera con el enlace)</option>
-                            <option>Privado (solo yo)</option>
-                            <option>Colaborativo (con permisos)</option>
+                            <option selected>Enlace Simple (solo lectura)</option>
+                            <option>Modo Colaborativo (con interacción)</option>
                         </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Expiración del enlace</label>
+                        <select class="form-input">
+                            <option>No expira</option>
+                            <option selected>30 días</option>
+                            <option>60 días</option>
+                            <option>90 días</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Límite de visualizaciones (opcional)</label>
+                        <input type="number" class="form-input" placeholder="Ej: 100" value="100">
                     </div>
                     
                     <div class="form-group">
                         <label style="display: flex; align-items: center; gap: 8px;">
                             <input type="checkbox" checked>
-                            <span>Permitir ver precios</span>
+                            <span>Permitir comentarios</span>
                         </label>
                     </div>
                     
@@ -689,13 +765,14 @@
                     
                     <div class="form-group">
                         <label style="display: flex; align-items: center; gap: 8px;">
-                            <input type="checkbox">
-                            <span>Notificarme cuando vean mi lista</span>
+                            <input type="checkbox" checked>
+                            <span>Notificaciones de actividad</span>
                         </label>
                     </div>
                     
                     <div class="action-buttons">
-                        <button class="btn">Guardar Configuración</button>
+                        <button class="btn">Aplicar Configuración</button>
+                        <button class="btn btn-outline">Restablecer</button>
                     </div>
                 </div>
 
@@ -713,119 +790,11 @@
                     
                     <div style="background: #e7f3ff; border: 1px solid #b3d9ff; border-radius: 6px; padding: 12px; margin-bottom: 15px;">
                         <div style="font-weight: 500; color: #0066cc;">💝 Lista de regalos compartida</div>
-                        <div style="font-size: 14px; color: #0066cc;">Puedes ver los productos pero no editarlos</div>
+                        <div style="font-size: 14px; color: #0066cc;">Puedes ver los productos y dejar comentarios</div>
                     </div>
-                    
-                    <div class="action-buttons">
-                        <button class="btn">🛒 Ver Productos</button>
-                        <button class="btn btn-outline">📱 Compartir</button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- 3. COLABORACIÓN BÁSICA -->
-        <div class="mockup-section">
-            <div class="section-title">3. Colaboración Básica</div>
-            
-            <div class="mockup-grid">
-                <!-- Enlace Colaborativo -->
-                <div class="mockup-card">
-                    <div class="mockup-header">
-                        <div class="mockup-title">Enlace Colaborativo</div>
-                        <div class="badge badge-success">ACTIVO</div>
-                    </div>
-                    
-                    <div class="share-link-container">
-                        <div class="share-link">https://zara.com/collab/xyz789abc</div>
-                        <div style="display: flex; gap: 10px;">
-                            <button class="btn btn-success" style="flex: 1;">📋 Copiar Enlace</button>
-                            <button class="btn btn-outline">↗️</button>
-                        </div>
-                    </div>
-                    
-                    <div class="expiration-warning">
-                        <div style="font-weight: 500;">⏰ Expira en 15 días</div>
-                        <div style="font-size: 14px;">Este enlace dejará de funcionar el 15/02/2024</div>
-                    </div>
-                    
-                    <div class="collaboration-stats">
-                        <div class="collab-stat">
-                            <div class="collab-stat-value">28/100</div>
-                            <div class="collab-stat-label">Visualizaciones</div>
-                        </div>
-                        <div class="collab-stat">
-                            <div class="collab-stat-value">5</div>
-                            <div class="collab-stat-label">Comentarios</div>
-                        </div>
-                        <div class="collab-stat">
-                            <div class="collab-stat-value">12</div>
-                            <div class="collab-stat-label">Reacciones</div>
-                        </div>
-                    </div>
-                    
-                    <div class="action-buttons">
-                        <button class="btn btn-info">Configurar</button>
-                        <button class="btn btn-danger">Revocar</button>
-                    </div>
-                </div>
-
-                <!-- Configuración Colaborativa -->
-                <div class="mockup-card">
-                    <div class="mockup-header">
-                        <div class="mockup-title">Configuración Colaborativa</div>
-                        <div class="badge">CONTROLES</div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Días hasta expiración</label>
-                        <select class="form-input">
-                            <option>7 días</option>
-                            <option selected>30 días</option>
-                            <option>60 días</option>
-                            <option>90 días</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Límite de visualizaciones</label>
-                        <input type="number" class="form-input" value="100" min="1" max="1000">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label style="display: flex; align-items: center; gap: 8px;">
-                            <input type="checkbox" checked>
-                            <span>Permitir comentarios</span>
-                        </label>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label style="display: flex; align-items: center; gap: 8px;">
-                            <input type="checkbox">
-                            <span>Permitir sugerencias</span>
-                        </label>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label style="display: flex; align-items: center; gap: 8px;">
-                            <input type="checkbox" checked>
-                            <span>Notificaciones de actividad</span>
-                        </label>
-                    </div>
-                    
-                    <div class="action-buttons">
-                        <button class="btn">Aplicar Configuración</button>
-                    </div>
-                </div>
-
-                <!-- Interacciones Colaborativas -->
-                <div class="mockup-card">
-                    <div class="mockup-header">
-                        <div class="mockup-title">Actividad Colaborativa</div>
-                        <div class="badge badge-info">EN TIEMPO REAL</div>
-                    </div>
-                    
-                    <div style="max-height: 300px; overflow-y: auto;">
+                    <!-- Comentarios -->
+                    <div style="max-height: 200px; overflow-y: auto; margin: 15px 0;">
                         <div style="display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #f0f0f0;">
                             <div style="width: 32px; height: 32px; background: #007bff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">A</div>
                             <div style="flex: 1;">
@@ -835,21 +804,12 @@
                             </div>
                         </div>
                         
-                        <div style="display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #f0f0f0;">
+                        <div style="display: flex; gap: 10px; padding: 10px;">
                             <div style="width: 32px; height: 32px; background: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">C</div>
                             <div style="flex: 1;">
                                 <div style="font-weight: 500;">Carlos</div>
                                 <div style="font-size: 14px; color: #666;">Reservado el bolso de cuero ✅</div>
                                 <div style="font-size: 12px; color: #999;">Ayer 15:30</div>
-                            </div>
-                        </div>
-                        
-                        <div style="display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #f0f0f0;">
-                            <div style="width: 32px; height: 32px; background: #6f42c1; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">M</div>
-                            <div style="flex: 1;">
-                                <div style="font-weight: 500;">María</div>
-                                <div style="font-size: 14px; color: #666;">¿Has considerado esta alternativa? 🤔</div>
-                                <div style="font-size: 12px; color: #999;">Ayer 11:15</div>
                             </div>
                         </div>
                     </div>
@@ -862,9 +822,9 @@
             </div>
         </div>
 
-        <!-- 4. AÑADIR, ACTUALIZAR Y ELIMINAR PRODUCTOS -->
+        <!-- 3. AÑADIR, ACTUALIZAR Y ELIMINAR PRODUCTOS -->
         <div class="mockup-section">
-            <div class="section-title">4. Añadir, Actualizar y Eliminar Productos</div>
+            <div class="section-title">3. Añadir, Actualizar y Eliminar Productos</div>
             
             <div class="mockup-grid">
                 <!-- Añadir Producto -->
@@ -1030,6 +990,14 @@
                     }, 2000);
                 });
             }
+        });
+
+        // Simulación de opciones de sharing
+        document.querySelectorAll('.sharing-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.sharing-option').forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+            });
         });
     </script>
 </body>
