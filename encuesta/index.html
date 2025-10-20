@@ -61,6 +61,38 @@
             padding: 40px;
         }
 
+        /* Pantalla de Bienvenida */
+        .welcome-screen {
+            text-align: center;
+            padding: 50px 40px;
+        }
+
+        .welcome-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-screen h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .welcome-screen p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .welcome-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
         .question {
             display: none;
             animation: fadeIn 0.5s ease;
@@ -186,6 +218,18 @@
             color: white;
         }
 
+        .btn-outline {
+            background: transparent;
+            color: #666;
+            border-color: #ddd;
+        }
+
+        .btn-outline:hover {
+            background: #f8f9fa;
+            border-color: #666;
+            color: #333;
+        }
+
         .btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
@@ -214,6 +258,40 @@
             display: none;
         }
 
+        .thank-you-screen {
+            text-align: center;
+            padding: 60px 40px;
+        }
+
+        .thank-you-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .thank-you-screen h2 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .thank-you-screen p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .discount-badge {
+            background: #000;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            display: inline-block;
+            margin: 20px 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
         @media (max-width: 768px) {
             .survey-content {
                 padding: 30px 20px;
@@ -227,14 +305,22 @@
                 padding: 10px 20px;
                 font-size: 14px;
             }
+
+            .welcome-screen {
+                padding: 40px 20px;
+            }
+
+            .welcome-buttons {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
     <div class="survey-container">
         <div class="survey-header">
-            <h1>¡Tu opinión nos ayuda a mejorar! 🔮</h1>
-            <p>En Zara estamos trabajando en una nueva funcionalidad de LISTA DE DESEOS</p>
+            <h1>Zara</h1>
+            <p>Encuesta de experiencia de usuario</p>
         </div>
         
         <div class="survey-progress">
@@ -242,9 +328,26 @@
         </div>
         
         <form id="wishlistSurvey">
+            <!-- Pantalla de Bienvenida -->
+            <div class="welcome-screen active" id="welcomeScreen">
+                <div class="welcome-icon">🔮</div>
+                <h2>¡Tu opinión nos ayuda a mejorar!</h2>
+                <p>En Zara estamos trabajando en una nueva funcionalidad de <strong>LISTA DE DESEOS</strong> y nos encantaría conocer tus preferencias.</p>
+                <p>Solo te llevará 2 minutos y nos ayudarás mucho.</p>
+                
+                <div class="welcome-buttons">
+                    <button type="button" class="btn" id="startSurveyBtn">
+                        Comenzar Encuesta
+                    </button>
+                    <button type="button" class="btn btn-outline" id="laterBtn">
+                        Quizás más tarde
+                    </button>
+                </div>
+            </div>
+            
             <div class="survey-content">
                 <!-- Pregunta 1 -->
-                <div class="question active" id="question1">
+                <div class="question" id="question1">
                     <h2>¿Cómo sueles guardar productos que te interesan pero no compras inmediatamente?<span class="required">*</span></h2>
                     <div class="options-group">
                         <label class="option">
@@ -361,9 +464,27 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Pantalla de Agradecimiento -->
+                <div class="question thank-you-screen" id="thankYouScreen">
+                    <div class="thank-you-icon">💫</div>
+                    <h2>¡Gracias por tu ayuda!</h2>
+                    <p>Tu feedback es muy valioso para nosotros. Con respuestas como la tuya, podremos crear una wishlist que realmente te encante.</p>
+                    
+                    <div class="discount-badge">
+                        10% DE DESCUENTO<br>
+                        en tu próxima compra
+                    </div>
+                    
+                    <p>Código: <strong>WISHLIST10</strong></p>
+                    
+                    <button type="button" class="btn" id="closeSurveyBtn" style="margin-top: 20px;">
+                        Cerrar y seguir comprando
+                    </button>
+                </div>
             </div>
             
-            <div class="survey-footer">
+            <div class="survey-footer" id="surveyFooter" style="display: none;">
                 <button type="button" class="btn btn-secondary" id="prevBtn" disabled>Anterior</button>
                 <span class="step-indicator">Paso <span id="currentStep">1</span> de 5</span>
                 <button type="button" class="btn" id="nextBtn">Siguiente</button>
@@ -372,7 +493,7 @@
     </div>
 
     <script>
-        let currentQuestion = 1;
+        let currentQuestion = 0; // 0 = pantalla bienvenida
         const totalQuestions = 5;
 
         // Elementos DOM
@@ -380,10 +501,39 @@
         const currentStep = document.getElementById('currentStep');
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
+        const startSurveyBtn = document.getElementById('startSurveyBtn');
+        const laterBtn = document.getElementById('laterBtn');
+        const closeSurveyBtn = document.getElementById('closeSurveyBtn');
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const surveyFooter = document.getElementById('surveyFooter');
+        const thankYouScreen = document.getElementById('thankYouScreen');
+
+        // Iniciar encuesta
+        startSurveyBtn.addEventListener('click', () => {
+            currentQuestion = 1;
+            welcomeScreen.classList.remove('active');
+            document.getElementById('question1').classList.add('active');
+            surveyFooter.style.display = 'flex';
+            updateProgress();
+        });
+
+        // Posponer encuesta
+        laterBtn.addEventListener('click', () => {
+            if (confirm('¿Seguro que quieres posponer la encuesta? Podrás completarla más tarde desde tu perfil.')) {
+                // En una app real, aquí se guardaría el estado y se cerraría el modal
+                alert('Encuesta pospuesta. ¡Esperamos tu feedback más tarde!');
+            }
+        });
+
+        // Cerrar encuesta completada
+        closeSurveyBtn.addEventListener('click', () => {
+            // En una app real, aquí se cerraría el modal/componente
+            alert('¡Gracias por participar! Tu código de descuento ha sido aplicado a tu cuenta.');
+        });
 
         // Actualizar progreso
         function updateProgress() {
-            const progress = ((currentQuestion - 1) / (totalQuestions - 1)) * 100;
+            const progress = (currentQuestion / totalQuestions) * 100;
             progressBar.style.width = `${progress}%`;
             currentStep.textContent = currentQuestion;
         }
@@ -391,7 +541,15 @@
         // Mostrar/ocultar preguntas
         function showQuestion(questionNumber) {
             document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
-            document.getElementById(`question${questionNumber}`).classList.add('active');
+            
+            if (questionNumber === 0) {
+                welcomeScreen.classList.add('active');
+            } else if (questionNumber > totalQuestions) {
+                thankYouScreen.classList.add('active');
+                surveyFooter.style.display = 'none';
+            } else {
+                document.getElementById(`question${questionNumber}`).classList.add('active');
+            }
             
             // Actualizar botones
             prevBtn.disabled = questionNumber === 1;
@@ -402,6 +560,8 @@
 
         // Validar pregunta actual
         function validateCurrentQuestion() {
+            if (currentQuestion === 0 || currentQuestion > totalQuestions) return true;
+            
             const currentQ = document.getElementById(`question${currentQuestion}`);
             const errorElement = document.getElementById(`error${currentQuestion}`);
             
@@ -484,6 +644,8 @@
         });
 
         nextBtn.addEventListener('click', () => {
+            if (currentQuestion === 0) return;
+            
             if (!validateCurrentQuestion()) {
                 return;
             }
@@ -492,10 +654,9 @@
                 currentQuestion++;
                 showQuestion(currentQuestion);
             } else {
-                // Enviar encuesta
-                alert('¡Gracias por completar la encuesta! Tu feedback es muy valioso para nosotros.');
-                // Aquí iría la lógica para enviar los datos al servidor
-                console.log('Encuesta completada');
+                // Mostrar pantalla de agradecimiento
+                currentQuestion = totalQuestions + 1;
+                showQuestion(currentQuestion);
             }
         });
 
