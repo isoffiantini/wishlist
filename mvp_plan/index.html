@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wishlist Platform - Project Site</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #34495e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        
+        .epic-section {
+            background: white;
+            margin: 2rem 0;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .epic-header {
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .user-story {
+            background: var(--light);
+            margin: 1rem 0;
+            padding: 1.5rem;
+            border-left: 4px solid var(--secondary);
+            border-radius: 5px;
+        }
+        
+        .api-spec {
+            background: #f8f9fa;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 1rem;
+        }
+        
+        .status-ready { background: #27ae60; color: white; }
+        .status-dev { background: #f39c12; color: white; }
+        .status-planning { background: #95a5a6; color: white; }
+        
+        .roadmap-phase {
+            background: white;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            border-left: 5px solid var(--secondary);
+        }
+        
+        h1, h2, h3 {
+            color: var(--primary);
+        }
+        
+        header h1 {
+            color: white;
+        }
+        
+        .metric-card {
+            background: white;
+            padding: 1rem;
+            margin: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .metrics-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🚀 Wishlist Platform</h1>
+            <p>Gestión Avanzada de Listas de Deseos - Site del Proyecto</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- ÉPICA 1 -->
+        <section class="epic-section">
+            <div class="epic-header">
+                <h2>ÉPICA 1: Gestión de Múltiples Wishlists</h2>
+                <p><strong>Estado:</strong> <span class="status-badge status-ready">Backend Ready</span></p>
+                <p>Permitir a los usuarios crear y administrar múltiples listas de deseos organizadas</p>
+            </div>
+
+            <!-- US 1.1 -->
+            <div class="user-story">
+                <h3>US-1.1: Creación de Nueva Wishlist</h3>
+                <p><strong>Como</strong> usuario registrado <strong>quiero</strong> crear una nueva wishlist con nombre y descripción <strong>para</strong> organizar productos por categorías específicas</p>
+                
+                <div class="api-spec">
+                    <strong>API: POST /api/v1/wishlists</strong><br>
+                    Headers: { Authorization: Bearer {token} }<br>
+                    Body: {<br>
+                    &nbsp;&nbsp;"name": "Mi Wishlist de Cumpleaños",<br>
+                    &nbsp;&nbsp;"description": "Regalos que me gustaría para mi cumpleaños",<br>
+                    &nbsp;&nbsp;"is_public": false,<br>
+                    &nbsp;&nbsp;"cover_color": "#FF6B6B"<br>
+                    }<br>
+                    Response: 201 Created<br>
+                    {<br>
+                    &nbsp;&nbsp;"id": "wl_abc123",<br>
+                    &nbsp;&nbsp;"name": "Mi Wishlist de Cumpleaños",<br>
+                    &nbsp;&nbsp;"description": "Regalos que me gustaría para mi cumpleaños",<br>
+                    &nbsp;&nbsp;"item_count": 0,<br>
+                    &nbsp;&nbsp;"created_at": "2024-01-15T10:30:00Z"<br>
+                    }
+                </div>
+            </div>
+
+            <!-- US 1.2 -->
+            <div class="user-story">
+                <h3>US-1.2: Listado de Wishlists</h3>
+                <p><strong>Como</strong> usuario <strong>quiero</strong> ver todas mis wishlists en un panel principal <strong>para</strong> tener una visión general</p>
+                
+                <div class="api-spec">
+                    <strong>API: GET /api/v1/wishlists</strong><br>
+                    Headers: { Authorization: Bearer {token} }<br>
+                    Query Params: ?page=1&limit=20&sort=updated_at<br>
+                    Response: 200 OK<br>
+                    {<br>
+                    &nbsp;&nbsp;"wishlists": [<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"id": "wl_abc123",<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"name": "Mi Wishlist de Cumpleaños",<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"description": "Regalos que me gustaría...",<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"item_count": 5,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"is_default": false,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"updated_at": "2024-01-20T15:45:00Z"<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                    &nbsp;&nbsp;],<br>
+                    &nbsp;&nbsp;"pagination": {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;"total": 8,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;"page": 1,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;"total_pages": 1<br>
+                    &nbsp;&nbsp;}<br>
+                    }
+                </div>
+            </div>
+
+            <!-- US 1.3 -->
+            <div class="user-story">
+                <h3>US-1.3: Actualización de Wishlist</h3>
+                <p><strong>Como</strong> usuario <strong>quiero</strong> editar el nombre y descripción de cualquier wishlist existente <strong>para</strong> mantenerla actualizada</p>
+                
+                <div class="api-spec">
+                    <strong>API: PUT /api/v1/wishlists/{wishlist_id}</strong><br>
+                    Headers: { Authorization: Bearer {token} }<br>
+                    Body: {<br>
+                    &nbsp;&nbsp;"name": "Wishlist Actualizada",<br>
+                    &nbsp;&nbsp;"description": "Nueva descripción",<br>
+                    &nbsp;&nbsp;"cover_color": "#4ECDC4"<br>
+                    }<br>
+                    Response: 200 OK<br>
+                    {<br>
+                    &nbsp;&nbsp;"id": "wl_abc123",<br>
+                    &nbsp;&nbsp;"name": "Wishlist Actualizada",<br>
+                    &nbsp;&nbsp;"description": "Nueva descripción",<br>
+                    &nbsp;&nbsp;"updated_at": "2024-01-20T16:00:00Z"<br>
+                    }
+                </div>
+            </div>
+        </section>
+
+        <!-- ÉPICA 2 -->
+        <section class="epic-section">
+            <div class="epic-header">
+                <h2>ÉPICA 2: Sistema de Compartición Unificado</h2>
+                <p><strong>Estado:</strong> <span class="status-badge status-dev">En Desarrollo</span></p>
+                <p>Implementar modalidades flexibles de compartición para promover viralidad</p>
+            </div>
+
+            <!-- US 2.1 -->
+            <div class="user-story">
+                <h3>US-2.1: Generación de Enlace Público</h3>
+                <p><strong>Como</strong> usuario <strong>quiero</strong> generar un enlace público permanente para cualquier wishlist <strong>para</strong> compartirla fácilmente</p>
+                
+                <div class="api-spec">
+                    <strong>API: POST /api/v1/wishlists/{wishlist_id}/share-links</strong><br>
+                    Headers: { Authorization: Bearer {token} }<br>
+                    Body: {<br>
+                    &nbsp;&nbsp;"type": "public",<br>
+                    &nbsp;&nbsp;"expires_at": null,<br>
+                    &nbsp;&nbsp;"max_views": null<br>
+                    }<br>
+                    Response: 201 Created<br>
+                    {<br>
+                    &nbsp;&nbsp;"share_id": "sh_xyz789",<br>
+                    &nbsp;&nbsp;"share_url": "https://domain.com/share/shortcode123",<br>
+                    &nbsp;&nbsp;"type": "public",<br>
+                    &nbsp;&nbsp;"expires_at": null,<br>
+                    &nbsp;&nbsp;"is_active": true<br>
+                    }
+                </div>
+            </div>
+
+            <!-- US 2.5 -->
+            <div class="user-story">
+                <h3>US-2.5: Enlace Colaborativo con Expiración</h3>
+                <p><strong>Como</strong> usuario <strong>quiero</strong> crear enlaces colaborativos con fecha de expiración <strong>para</strong> controlar el acceso temporal</p>
+                
+                <div class="api-spec">
+                    <strong>API: POST /api/v1/wishlists/{wishlist_id}/share-links</strong><br>
+                    Headers: { Authorization: Bearer {token} }<br>
+                    Body: {<br>
+                    &nbsp;&nbsp;"type": "collaborative",<br>
+                    &nbsp;&nbsp;"expires_at": "2024-02-15T23:59:59Z",<br>
+                    &nbsp;&nbsp;"max_views": 50,<br>
+                    &nbsp;&nbsp;"allow_comments": true,<br>
+                    &nbsp;&nbsp;"allow_reactions": true<br>
+                    }<br>
+                    Response: 201 Created<br>
+                    {<br>
+                    &nbsp;&nbsp;"share_id": "sh_collab456",<br>
+                    &nbsp;&nbsp;"share_url": "https://domain.com/share/collab789",<br>
+                    &nbsp;&nbsp;"type": "collaborative",<br>
+                    &nbsp;&nbsp;"expires_at": "2024-02-15T23:59:59Z",<br>
+                    &nbsp;&nbsp;"max_views": 50,<br>
+                    &nbsp;&nbsp;"current_views": 0<br>
+                    }
+                </div>
+            </div>
+
+            <!-- US 2.7 -->
+            <div class="user-story">
+                <h3>US-2.7: Sistema de Comentarios Colaborativos</h3>
+                <p><strong>Como</strong> colaborador <strong>quiero</strong> agregar comentarios a productos en wishlists compartidas <strong>para</strong> dar feedback</p>
+                
+                <div class="api-spec">
+                    <strong>API: POST /api/v1/shared/{share_id}/items/{item_id}/comments</strong><br>
+                    Headers: { Authorization: Bearer {token} } // Opcional para usuarios registrados<br>
+                    Body: {<br>
+                    &nbsp;&nbsp;"comment": "¡Este color es perfecto!",<br>
+                    &nbsp;&nbsp;"guest_name": "María" // Solo para usuarios no registrados<br>
+                    }<br>
+                    Response: 201 Created<br>
+                    {<br>
+                    &nbsp;&nbsp;"comment_id": "cmt_123",<br>
+                    &nbsp;&nbsp;"item_id": "item_abc",<br>
+                    &nbsp;&nbsp;"comment": "¡Este color es perfecto!",<br>
+                    &nbsp;&nbsp;"author_name": "María",<br>
+                    &nbsp;&nbsp;"created_at": "2024-01-20T14:30:00Z"<br>
+                    }
+                </div>
+            </div>
+        </section>
+
+        <!-- ÉPICA 3 -->
+        <section class="epic-section">
+            <div class="epic-header">
+                <h2>ÉPICA 3: Panel de Analytics de Wishlists</h2>
+                <p><strong>Estado:</strong> <span class="status-badge status-planning">Planning</span></p>
+                <p>Proporcionar insights detallados sobre rendimiento y engagement</p>
+            </div>
+
+            <!-- US 3.1 -->
+            <div class="user-story">
+                <h3>US-3.1: Métricas Básicas de Wishlists</h3>
+                <p><strong>Como</strong> usuario <strong>quiero</strong> ver el número total de wishlists activas vs. creadas <strong>para</strong> entender mi uso</p>
+                
+                <div class="api-spec">
+                    <strong>API: GET /api/v1/analytics/wishlists/overview</strong><br>
+                    Headers: { Authorization: Bearer {token} }<br>
+                    Query Params: ?time_range=30d // 7d, 30d, 90d, 1y<br>
+                    Response: 200 OK<br>
+                    {<br>
+                    &nbsp;&nbsp;"total_created": 15,<br>
+                    &nbsp;&nbsp;"active_count": 12,<br>
+                    &nbsp;&nbsp;"archived_count": 3,<br>
+                    &nbsp;&nbsp;"public_count": 8,<br>
+                    &nbsp;&nbsp;"private_count": 7,<br>
+                    &nbsp;&nbsp;"avg_items_per_list": 6.3,<br>
+                    &nbsp;&nbsp;"most_popular_list": {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;"id": "wl_abc123",<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;"name": "Cumpleaños",<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;"item_count": 15<br>
+                    &nbsp;&nbsp;}<br>
+                    }
+                </div>
+            </div>
+
+            <!-- US 3.4 -->
+            <div class="user-story">
+                <h3>US-3.4: Métricas de Engagement por Wishlist</h3>
+                <p><strong>Como</strong> usuario <strong>quiero</strong> monitorear visualizaciones totales de mis wishlists compartidas <strong>para</strong> medir interés</p>
+                
+                <div class="api-spec">
+                    <strong>API: GET /api/v1/analytics/wishlists/{wishlist_id}/engagement</strong><br>
+                    Headers: { Authorization: Bearer {token} }<br>
+                    Query Params: ?time_range=30d&granularity=daily // daily, weekly, monthly<br>
+                    Response: 200 OK<br>
+                    {<br>
+                    &nbsp;&nbsp;"wishlist_id": "wl_abc123",<br>
+                    &nbsp;&nbsp;"wishlist_name": "Mi Wishlist",<br>
+                    &nbsp;&nbsp;"total_views": 245,<br>
+                    &nbsp;&nbsp;"unique_viewers": 89,<br>
+                    &nbsp;&nbsp;"conversion_rate": 0.18,<br>
+                    &nbsp;&nbsp;"items_added_to_cart": 15,<br>
+                    &nbsp;&nbsp;"daily_metrics": [<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;{"date": "2024-01-15", "views": 12, "conversions": 2},<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;{"date": "2024-01-16", "views": 18, "conversions": 3}<br>
+                    &nbsp;&nbsp;]<br>
+                    }
+                </div>
+            </div>
+
+            <!-- US 3.7 -->
+            <div class="user-story">
+                <h3>US-3.7: Exportación de Reportes</h3>
+                <p><strong>Como</strong> usuario <strong>quiero</strong> exportar reportes de analytics en formato CSV/PDF <strong>para</strong> análisis externo</p>
+                
+                <div class="api-spec">
+                    <strong>API: POST /api/v1/analytics/reports/export</strong><br>
+                    Headers: { Authorization: Bearer {token} }<br>
+                    Body: {<br>
+                    &nbsp;&nbsp;"report_type": "wishlist_performance", // "engagement", "conversion"<br>
+                    &nbsp;&nbsp;"format": "csv", // "pdf", "json"<br>
+                    &nbsp;&nbsp;"time_range": "90d",<br>
+                    &nbsp;&nbsp;"wishlist_ids": ["wl_abc123", "wl_def456"]<br>
+                    }<br>
+                    Response: 202 Accepted<br>
+                    {<br>
+                    &nbsp;&nbsp;"report_id": "rep_789",<br>
+                    &nbsp;&nbsp;"status": "processing",<br>
+                    &nbsp;&nbsp;"estimated_completion": "2024-01-20T15:00:00Z",<br>
+                    &nbsp;&nbsp;"download_url": "/api/v1/reports/rep_789/download" // Una vez completado<br>
+                    }
+                </div>
+            </div>
+        </section>
+
+        <!-- ROADMAP -->
+        <section class="epic-section">
+            <div class="epic-header">
+                <h2>📅 Roadmap de Implementación</h2>
+            </div>
+
+            <div class="roadmap-phase">
+                <h3>Fase 1 - MVP Avanzado (Semanas 1-8)</h3>
+                <p><strong>Épicas:</strong> 0 + 1 (Sprints 1-2)</p>
+                <ul>
+                    <li>Migración modelo de datos a múltiples wishlists</li>
+                    <li>API completa de gestión de wishlists</li>
+                    <li>Interfaz básica de múltiples listas</li>
+                </ul>
+            </div>
+
+            <div class="roadmap-phase">
+                <h3>Fase 2 - Compartición Básica (Semanas 9-14)</h3>
+                <p><strong>Épicas:</strong> 2 (Sprint 1) + 3 (Sprint 1)</p>
+                <ul>
+                    <li>Enlaces públicos simples</li>
+                    <li>Métricas básicas de analytics</li>
+                    <li>Dashboard de compartición</li>
+                </ul>
+            </div>
+
+            <div class="roadmap-phase">
+                <h3>Fase 3 - Experiencia Completa (Semanas 15-22)</h3>
+                <p><strong>Épicas:</strong> 2 (Sprints 2-3) + 3 (Sprints 2-3)</p>
+                <ul>
+                    <li>Modo colaborativo avanzado</li>
+                    <li>Analytics detallados y exportación</li>
+                    <li>Sistema de notificaciones</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- MÉTRICAS -->
+        <section class="epic-section">
+            <div class="epic-header">
+                <h2>📊 Métricas de Éxito</h2>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <h3>Épica 1</h3>
+                    <p>↑ 40% uso recurrente</p>
+                    <p>↑ 25% productos guardados/usuario</p>
+                </div>
+                <div class="metric-card">
+                    <h3>Épica 2</h3>
+                    <p>↑ 60% wishlists compartidas</p>
+                    <p>↑ 35% conversiones desde enlaces</p>
+                </div>
+                <div class="metric-card">
+                    <h3>Épica 3</h3>
+                    <p>80% usuarios consultan analytics</p>
+                    <p>↑ 20% optimización basada en datos</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
