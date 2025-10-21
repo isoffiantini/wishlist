@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zara Wishlist - Notificaciones de Precio/Stock</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .mockup-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #28a745;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: "🔔";
+            font-size: 28px;
+        }
+
+        .mockup-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .mockup-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 25px;
+            background: #fafafa;
+            transition: all 0.3s ease;
+        }
+
+        .mockup-card:hover {
+            border-color: #28a745;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .mockup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .mockup-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .badge {
+            background: #28a745;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-new {
+            background: #007bff;
+        }
+
+        .badge-success {
+            background: #28a745;
+        }
+
+        .badge-warning {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .badge-danger {
+            background: #dc3545;
+        }
+
+        .badge-info {
+            background: #17a2b8;
+        }
+
+        .product-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .product-header {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .product-image {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 12px;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .product-price {
+            font-size: 16px;
+            font-weight: 600;
+            color: #000;
+        }
+
+        .price-drop {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .old-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .stock-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+
+        .in-stock {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .out-of-stock {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .notification-item {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            align-items: flex-start;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .icon-price {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .icon-stock {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .icon-general {
+            background: #cce7ff;
+            color: #004085;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #333;
+        }
+
+        .notification-message {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .notification-time {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .notification-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: 2px solid #000;
+            border-radius: 8px;
+            background: #000;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn:hover {
+            background: #333;
+            border-color: #333;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #000;
+        }
+
+        .btn-outline:hover {
+            background: #000;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            border-color: #28a745;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            border-color: #218838;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            border-color: #c82333;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            border-color: #17a2b8;
+        }
+
+        .btn-info:hover {
+            background: #138496;
+            border-color: #138496;
+        }
+
+        .btn-small {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #28a745;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        .settings-group {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+
+        .settings-label {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .settings-description {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .push-notification {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-left: 4px solid #28a745;
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .notification-app {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .notification-time-small {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #28a745;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-text {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .alert-banner {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #856404;
+        }
+
+        @media (max-width: 768px) {
+            .mockup-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .settings-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .notification-item {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <!-- 1. CONFIGURACIÓN DE ALERTAS -->
+        <div class="mockup-section">
+            <div class="section-title">1. Configuración de Alertas</div>
+            
+            <div class="mockup-grid">
+                <!-- Configuración Global -->
+                <div class="mockup-card">
+                    <div class="mockup-header">
+                        <div class="mockup-title">Configuración Global</div>
+                        <div class="badge badge-success">ACTIVO</div>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <div class="settings-item">
+                            <div>
+                                <div class="settings-label">Alertas de Precio</div>
+                                <div class="settings-description">Recibir notificaciones cuando productos bajen de precio</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <div>
+                                <div class="settings-label">Alertas de Stock</div>
+                                <div class="settings-description">Avisar cuando productos agotados estén disponibles</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <div>
+                                <div class="settings-label">Notificaciones Push</div>
+                                <div class="settings-description">Recibir alertas en tu dispositivo</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">12</div>
+                            <div class="stat-label">Productos monitoreados</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">3</div>
+                            <div class="stat-label">Alertas este mes</div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons" style="margin-top: 20px;">
+                        <button class="btn">💾 Guardar Configuración</button>
+                    </div>
+                </div>
+
+                <!-- Configuración por Wishlist -->
+                <div class="mockup-card">
+                    <div class="mockup-header">
+                        <div class="mockup-title">Alertas por Wishlist</div>
+                        <div class="badge">PERSONALIZABLE</div>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <div class="settings-item">
+                            <div>
+                                <div class="settings-label">🎂 Cumpleaños 30</div>
+                                <div class="settings-description">8 productos · 2 con alertas activas</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <div>
+                                <div class="settings-label">👰 Lista de Boda</div>
+                                <div class="settings-description">12 productos · 5 con alertas activas</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <div>
+                                <div class="settings-label">🎄 Navidad 2024</div>
+                                <div class="settings-description">5 productos · Alertas desactivadas</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="alert-banner">
+                        <div style="font-weight: 500;">💡 Consejo</div>
+                        <div style="font-size: 14px;">Activa alertas solo en listas importantes para evitar spam</div>
+                    </div>
+                </div>
+
+                <!-- Configuración por Producto -->
+                <div class="mockup-card">
+                    <div class="mockup-header">
+                        <div class="mockup-title">Configuración por Producto</div>
+                        <div class="badge badge-info">DETALLADO</div>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-header">
+                            <div class="product-image">👗</div>
+                            <div class="product-info">
+                                <div class="product-name">VESTIDO MIDI SATINADO</div>
+                                <div class="product-price">29,95 €</div>
+                                <div><span class="stock-badge in-stock">En stock</span></div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <div>
+                                <div class="settings-label">Alertas de precio</div>
+                                <div class="settings-description">Notificar si baja de precio</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <div>
+                                <div class="settings-label">Alertas de stock</div>
+                                <div class="settings-description">Avisar si se agota o reaparece</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-header">
+                            <div class="product-image">👜</div>
+                            <div class="product-info">
+                                <div class="product-name">BOLSO DE CUERO NEGRO</div>
+                                <div class="product-price">79,95 €</div>
+                                <div><span class="stock-badge out-of-stock">Agotado</span></div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <div>
+                                <div class="settings-label">Alertas de precio</div>
+                                <div class="settings-description">Notificar si baja de precio</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <div>
+                                <div class="settings-label">Alertas de stock</div>
+                                <div class="settings-description">Avisar cuando esté disponible</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. NOTIFICACIONES PUSH EN APP -->
+        <div class="mockup-section">
+            <div class="section-title">2. Notificaciones Push en App</div>
+            
+            <div class="mockup-grid">
+                <!-- Centro de Notificaciones -->
+                <div class="mockup-card">
+                    <div class="mockup-header">
+                        <div class="mockup-title">Centro de Notificaciones</div>
+                        <div class="badge">3 NUEVAS</div>
+                    </div>
+                    
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        <!-- Notificación de precio -->
+                        <div class="notification-item">
+                            <div class="notification-icon icon-price">💰</div>
+                            <div class="notification-content">
+                                <div class="notification-title">¡Precio bajado!</div>
+                                <div class="notification-message">VESTIDO MIDI SATINADO ha bajado de 39,95 € a 29,95 €</div>
+                                <div class="notification-time">Hace 2 horas</div>
+                                <div class="notification-actions">
+                                    <button class="btn btn-success btn-small">Ver producto</button>
+                                    <button class="btn btn-outline btn-small">Mover al carrito</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Notificación de stock -->
+                        <div class="notification-item">
+                            <div class="notification-icon icon-stock">📦</div>
+                            <div class="notification-content">
+                                <div class="notification-title">¡Producto disponible!</div>
+                                <div class="notification-message">ZAPATOS DE TACÓN ALTO vuelven a estar en stock</div>
+                                <div class="notification-time">Ayer 14:30</div>
+                                <div class="notification-actions">
+                                    <button class="btn btn-success btn-small">Ver producto</button>
+                                    <button class="btn btn-outline btn-small">Más tarde</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Notificación de agotamiento -->
+                        <div class="notification-item">
+                            <div class="notification-icon icon-stock">⚠️</div>
+                            <div class="notification-content">
+                                <div class="notification-title">Stock limitado</div>
+                                <div class="notification-message">CHAQUETA DE PIEL queda 1 unidad en tu talla</div>
+                                <div class="notification-time">15 ene 2024</div>
+                                <div class="notification-actions">
+                                    <button class="btn btn-success btn-small">Comprar ahora</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Notificación antigua -->
+                        <div class="notification-item">
+                            <div class="notification-icon icon-price">💰</div>
+                            <div class="notification-content">
+                                <div class="notification-title">Precio bajado</div>
+                                <div class="notification-message">FALDA PLISADA bajó un 25%</div>
+                                <div class="notification-time">10 ene 2024</div>
+                                <div class="notification-actions">
+                                    <button class="btn btn-outline btn-small">Ver</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons" style="margin-top: 20px;">
+                        <button class="btn">📝 Marcar todas como leídas</button>
+                        <button class="btn btn-outline">⚙️ Configurar</button>
+                    </div>
+                </div>
+
+                <!-- Simulación Push Notification -->
+                <div class="mockup-card">
+                    <div class="mockup-header">
+                        <div class="mockup-title">Notificación Push</div>
+                        <div class="badge badge-new">EN TIEMPO REAL</div>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; border-radius: 12px; padding: 20px;">
+                        <!-- Simulación de smartphone -->
+                        <div style="background: #000; border-radius: 20px; padding: 20px; max-width: 300px; margin: 0 auto;">
+                            <!-- Status bar -->
+                            <div style="display: flex; justify-content: space-between; color: white; font-size: 12px; margin-bottom: 20px;">
+                                <span>9:41</span>
+                                <span>📶 🔋</span>
+                            </div>
+                            
+                            <!-- Notificación push -->
+                            <div class="push-notification">
+                                <div class="notification-header">
+                                    <div class="notification-app">ZARA</div>
+                                    <div class="notification-time-small">ahora</div>
+                                </div>
+                                <div style="font-weight: 600; margin-bottom: 4px;">¡Oferta en tu wishlist! 🎉</div>
+                                <div style="font-size: 14px; color: #666; margin-bottom: 8px;">
+                                    VESTIDO MIDI SATINADO bajó a <span style="color: #dc3545; font-weight: 600;">29,95 €</span>
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button style="flex: 1; padding: 8px; background: #000; color: white; border: none; border-radius: 6px; font-size: 12px;">Ver oferta</button>
+                                    <button style="padding: 8px; background: transparent; border: 1px solid #ddd; border-radius: 6px; font-size: 12px;">X</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Otra notificación -->
+                            <div class="push-notification" style="border-left-color: #ffc107;">
+                                <div class="notification-header">
+                                    <div class="notification-app">ZARA</div>
+                                    <div class="notification-time-small">hace 1h</div>
+                                </div>
+                                <div style="font-weight: 600; margin-bottom: 4px;">¡Producto disponible! 📦</div>
+                                <div style="font-size: 14px; color: #666;">
+                                    BOLSO DE CUERO vuelve a estar en stock
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <div class="settings-item">
+                            <div>
+                                <div class="settings-label">Sonido de notificaciones</div>
+                                <div class="settings-description">Reproducir sonido al recibir alertas</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <div>
+                                <div class="settings-label">Vibración</div>
+                                <div class="settings-description">Vibrar al recibir notificaciones</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Estadísticas de Alertas -->
+                <div class="mockup-card">
+                    <div class="mockup-header">
+                        <div class="mockup-title">Estadísticas de Alertas</div>
+                        <div class="badge">RESUMEN</div>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">12</div>
+                            <div class="stat-label">Productos monitoreados</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">3</div>
+                            <div class="stat-label">Alertas este mes</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">2</div>
+                            <div class="stat-label">Conversiones</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">45€</div>
+                            <div class="stat-label">Ahorro total</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <div style="font-weight: 500; margin-bottom: 10px;">Actividad de alertas:</div>
+                        <div style="background: #e9ecef; border-radius: 10px; height: 8px; overflow: hidden; margin-bottom: 5px;">
+                            <div style="background: #28a745; height: 100%; width: 60%;"></div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 12px; color: #666;">
+                            <span>Ene</span>
+                            <span>Feb</span>
+                            <span>Mar</span>
+                            <span>Abr</span>
+                        </div>
+                    </div>
+                    
+                    <div class="alert-banner" style="margin-top: 20px;">
+                        <div style="font-weight: 500;">💰 ¡Has ahorrado 45€ con alertas de precio!</div>
+                        <div style="font-size: 14px;">Sigue monitoreando tus productos favoritos</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. PRODUCTOS CON ALERTAS ACTIVAS -->
+        <div class="mockup-section">
+            <div class="section-title">3. Productos con Alertas Activas</div>
+            
+            <div class="mockup-grid">
+                <!-- Productos con precio bajado -->
+                <div class="mockup-card">
+                    <div class="mockup-header">
+                        <div class="mockup-title">Precios Bajados</div>
+                        <div class="badge badge-success">2 PRODUCTOS</div>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-header">
+                            <div class="product-image">👗</div>
+                            <div class="product-info">
+                                <div class="product-name">VESTIDO MIDI SATINADO</div>
+                                <div class="product-price price-drop">29,95 € <span class="old-price">39,95 €</span></div>
+                                <div><span class="stock-badge in-stock">En stock</span></div>
+                            </div>
+                        </div>
+                        <div style="color: #dc3545; font-size: 14px; margin-bottom: 10px;">✅ ¡Bajó 10,00 € (25%)!</div>
+                        <div class="action-buttons">
+                            <button class="btn btn-success">🛒 Añadir al carrito</button>
+                            <button class="btn btn-outline">👀 Ver producto</button>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-header">
+                            <div class="product-image">👠</div>
+                            <div class="product-info">
+                                <div class="product-name">ZAPATOS DE TACÓN ALTO</div>
+                                <div class="product-price price-drop">45,99 € <span class="old-price">59,99 €</span></div>
+                                <div><span class="stock-badge in-stock">Pocas unidades</span></div>
+                            </div>
+                        </div>
+                        <div style="color: #dc3545; font-size: 14px; margin-bottom: 10px;">✅ ¡Bajó 14,00 € (23%)!</div>
+                        <div class="action-buttons">
+                            <button class="btn btn-success">🛒 Añadir al carrito</button>
+                            <button class="btn btn-outline">👀 Ver producto</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Productos con stock reciente -->
+                <div class="mockup-card">
+                    <div class="mockup-header">
+                        <div class="mockup-title">Stock Disponible</div>
+                        <div class="badge badge-info">3 PRODUCTOS</div>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-header">
+                            <div class="product-image">👜</div>
+                            <div class="product-info">
+                                <div class="product-name">BOLSO DE CUERO NEGRO</div>
+                                <div class="product-price">79,95 €</div>
+                                <div><span class="stock-badge in-stock">¡Nuevo stock!</span></div>
+                            </div>
+                        </div>
+                        <div style="color: #28a745; font-size: 14px; margin-bottom: 10px;">📦 Disponible de nuevo</div>
+                        <div class="action-buttons">
+                            <button class="btn btn-success">🛒 Añadir al carrito</button>
+                            <button class="btn btn-outline">⭐ Mantener alerta</button>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-header">
+                            <div class="product-image">🧥</div>
+                            <div class="product-info">
+                                <div class="product-name">ABRIGO DE INVIERNO</div>
+                                <div class="product-price">129,95 €</div>
+                                <div><span class="stock-badge in-stock">Stock limitado</span></div>
+                            </div>
+                        </div>
+                        <div style="color: #ffc107; font-size: 14px; margin-bottom: 10px;">⚠️ Quedan pocas unidades</div>
+                        <div class="action-buttons">
+                            <button class="btn btn-success">🛒 Comprar ahora</button>
+                            <button class="btn btn-outline">💾 Guardar para después</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Productos siendo monitoreados -->
+                <div class="mockup-card">
+                    <div class="mockup-header">
+                        <div class="mockup-title">En Observación</div>
+                        <div class="badge">7 PRODUCTOS</div>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-header">
+                            <div class="product-image">👖</div>
+                            <div class="product-info">
+                                <div class="product-name">JEANS SKINNY FIT</div>
+                                <div class="product-price">35,95 €</div>
+                                <div><span class="stock-badge in-stock">En stock</span></div>
+                            </div>
+                        </div>
+                        <div style="font-size: 14px; color: #666; margin-bottom: 10px;">🔔 Monitoreando precio</div>
+                        <div class="action-buttons">
+                            <button class="btn btn-outline">⚙️ Gestionar alerta</button>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-header">
+                            <div class="product-image">👔</div>
+                            <div class="product-info">
+                                <div class="product-name">CAMISA FORMAL BLANCA</div>
+                                <div class="product-price">45,99 €</div>
+                                <div><span class="stock-badge out-of-stock">Agotado</span></div>
+                            </div>
+                        </div>
+                        <div style="font-size: 14px; color: #666; margin-bottom: 10px;">🔔 Esperando stock</div>
+                        <div class="action-buttons">
+                            <button class="btn btn-outline">⚙️ Gestionar alerta</button>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 15px;">
+                        <button class="btn btn-outline">📋 Ver todos (7)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Simulación de toggle switches
+        document.querySelectorAll('.toggle-switch input').forEach(switchInput => {
+            switchInput.addEventListener('change', function() {
+                const productCard = this.closest('.product-card');
+                if (productCard) {
+                    const productName = productCard.querySelector('.product-name').textContent;
+                    const alertType = this.parentElement.previousElementSibling.querySelector('.settings-label').textContent;
+                    const status = this.checked ? 'activada' : 'desactivada';
+                    
+                    // Mostrar feedback visual
+                    showNotification(`${alertType} ${status} para ${productName}`);
+                }
+            });
+        });
+
+        // Simulación de acciones de notificación
+        document.querySelectorAll('.notification-actions .btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const notification = this.closest('.notification-item');
+                const title = notification.querySelector('.notification-title').textContent;
+                
+                if (this.textContent.includes('carrito')) {
+                    showNotification('✅ Producto añadido al carrito');
+                } else if (this.textContent.includes('Ver')) {
+                    showNotification('🔍 Abriendo detalles del producto...');
+                }
+                
+                // Marcar como leída
+                notification.style.opacity = '0.6';
+            });
+        });
+
+        // Simulación de añadir al carrito desde productos con alertas
+        document.querySelectorAll('.product-card .btn-success').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const productCard = this.closest('.product-card');
+                const productName = productCard.querySelector('.product-name').textContent;
+                showNotification(`🛒 ${productName} añadido al carrito`);
+            });
+        });
+
+        function showNotification(message) {
+            // Crear notificación temporal
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #28a745;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 1000;
+                font-weight: 500;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // Remover después de 3 segundos
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Simulación de estadísticas en tiempo real
+        function updateStats() {
+            const monitoredProducts = document.querySelectorAll('.product-card').length;
+            const activeAlerts = document.querySelectorAll('.toggle-switch input:checked').length;
+            
+            // Actualizar contadores (en una app real esto vendría del backend)
+            document.querySelectorAll('.stat-value')[0].textContent = monitoredProducts;
+            document.querySelectorAll('.stat-value')[1].textContent = Math.floor(monitoredProducts / 4); // Simulación
+        }
+
+        // Inicializar
+        updateStats();
+    </script>
+</body>
+</html>
